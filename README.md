@@ -4,7 +4,7 @@
 cd ~/.config/kak/plugins
 git clone https://github.com/tom-huntington/tts.kak.git
 pip install tts.kak
-echo 'source %val{config}/plugins/tts.kak/tts.kak"' >> ~/.config/kak/kakrc
+echo 'source "%val{config}/plugins/tts.kak/tts.kak"' >> ~/.config/kak/kakrc
 ```
 
 or with plug.kak (which I'm not using atm, so this might me wrong)
