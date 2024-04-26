@@ -14,6 +14,8 @@ plug "tom-huntington/tts.kak" do %{
 }
 ```
 
+I'm using python 3.10.
+
 # Usage
 
 Start the server
@@ -29,5 +31,5 @@ kak
 ```
 
 `ctrl-c` wont work to stop the server.
-The script wont exit because it is blocking reading the fifo.
+The script wont exit because it is blocking, reading from the fifo.
 To unblock simply `:tts_cancel` or `echo " " > /tmp/kak_tts_fifo`
