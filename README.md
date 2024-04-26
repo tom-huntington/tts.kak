@@ -2,7 +2,8 @@
 
 ```
 cd ~/.config/kak/plugins
-git clone 
+git clone https://github.com/tom-huntington/tts.kak.git
+pip install tts.kak
 ```
 
 # Usage
@@ -10,5 +11,12 @@ git clone
 Start the server
 ```sh
 tts_server
+```
+
+in another terminal
+```
+kak
+:tts_narrate_from_cursor
+:tts_cancel
 ```
 
