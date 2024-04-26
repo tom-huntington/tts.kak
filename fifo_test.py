@@ -16,6 +16,7 @@ from nltk.data import load
 import json
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import more_itertools
 
 
 channels = 1  # Mono audio
@@ -182,7 +183,7 @@ async def play_audio(sentances):
         # print(f"writing to pulse audio: {sentances[0]=}")
         # audio_server.write(audio)
         # audio_server.write(sentance_pause)
-
+        loop = asyncio.get_running_loop()
         for sentance in sentances:
             print("starting get audio")
             # if asyncio.current_task().cancelling(): raise asyncio.CancelledError
@@ -192,7 +193,13 @@ async def play_audio(sentances):
             # if asyncio.current_task().cancelling(): raise asyncio.CancelledError
             await asyncio.sleep(0)
             print(f"writing to pulse audio: {sentance=}")
-            audio_server.write(audio)    
+            # await loop.run_in_executor(None, audio_server.write, audio)    
+            # audio_server.write(audio)
+            step=22050//4
+            stop = len(audio)
+            for i in range(0, stop, step):
+                await asyncio.sleep(0)
+                audio_server.write(audio[i:i+step])
             # if asyncio.current_task().cancelling(): raise asyncio.CancelledError
             await asyncio.sleep(0)
             print("writing pause")
@@ -211,19 +218,23 @@ async def read_from_fifo(loop):
     executor = ThreadPoolExecutor(max_workers=1)
     def open_read():
         with open('/tmp/kak_tts_fifo', "rb") as fifo:
+            print("start fifo.read")
             bytes = fifo.read()
-            return bytes.decode('utf-8')
+            print("fin fifo.read -- start bytes.decode")
+            s = bytes.decode('utf-8')
+            print("fin bytes.decode")
+            return s
 
     while True:
-        print("starting reading from fifo")
+        # print("starting reading from fifo")
         data = await loop.run_in_executor(executor, open_read)
         print("finished reading from fifo")
         if not data: 
-            print("not fifo data")
+            # print("not fifo data")
             continue
-        print("starting decodemessage")
+        # print("starting decodemessage")
         message, remainder = DecodeMessage(data)
-        print("ending decodemessage")
+        # # # print("ending decodemessage")
         assert remainder == ""
         yield message
 
@@ -236,7 +247,7 @@ async def main():
     running_task = None
 
     async for message in read_from_fifo(loop):
-
+        print("matching new message ")
         match message:
             case {"method": "write_to_file", "params":{"buffer": buffer, "bufname": bufname}}:
                 print("starting write to file")
