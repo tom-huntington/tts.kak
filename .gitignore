@@ -1,0 +1,16 @@
+__pycache__
+2sync.kak
+async_test.py
+cancel.kak
+*.txt
+*.m4a
+*.m4b
+mypipe
+*.vtt
+*.wav
+py_wav.py
+pyecho.py
+script.sh
+sync.kak
+pa_wav.py
+.vscode
